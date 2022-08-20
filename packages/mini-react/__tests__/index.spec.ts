@@ -1,4 +1,4 @@
-import { add } from '../lib';
+import { add } from '../index';
 
 describe('add', () => {
   it('should add two numbers', () => {

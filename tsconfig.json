@@ -20,8 +20,11 @@
     "forceConsistentCasingInFileNames": true,
     /* Disallow inconsistently-cased references to the same file. */
     "declaration": true,
-    "declarationDir": "build/types",
     "moduleResolution": "Node",
     "resolveJsonModule": true
   },
+  "exclude": [
+    "__tests__/**",
+    "**/*.spec.ts"
+  ]
 }

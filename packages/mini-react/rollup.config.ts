@@ -1,19 +1,19 @@
 import typescript from 'rollup-plugin-typescript2';
 import dts from 'rollup-plugin-dts';
-import pkg from '../../package.json';
+import pkg from './package.json';
+import { RollupOptions } from 'rollup';
 
 const mode = process.env.MODE;
 const isProd = mode === 'prod';
-
+const libName = 'mini-react';
 const external = [
   ...Object.keys(pkg.dependencies),
   ...Object.keys(pkg.devDependencies),
   ...Object.keys(pkg.peerDependencies),
 ];
-
 export default [
   {
-    input: `lib/index.ts`,
+    input: `./index.ts`,
     external,
     output: [
       {
@@ -28,7 +28,7 @@ export default [
         sourcemap: !isProd
       },
       {
-        file: 'build/mini-react.global.js',
+        file: `build/${libName}.global.js`,
         name: 'MiniReact',
         format: 'iife',
         sourcemap: !isProd
@@ -43,10 +43,10 @@ export default [
     input: 'build/types/index.d.ts',
     output: [
       {
-        file: 'build/my-lib.d.ts',
+        file: `build/${libName}.d.ts`,
         format: 'es'
       }
     ],
     plugins: [dts()],
   },
-];
+] as RollupOptions;
