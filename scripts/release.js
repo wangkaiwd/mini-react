@@ -21,6 +21,8 @@ const incrementVersions = [
 const resolve = (...args) => path.resolve(__dirname, '../', ...args);
 const dryRun = args.dryRun;
 const npmRegistry = 'https://registry.npmjs.org';
+const pkgManager = 'npm';
+
 const run = (cmd, args, options) => execa(cmd, args, { stdio: 'inherit', ...options });
 
 const ifDryRun = (cmd, args, options) => dryRun ? console.log(`${cmd} ${args.join(' ')}`) : run(cmd, args, options);
@@ -36,19 +38,19 @@ const commitChanges = async (version) => {
 
 const build = async () => {
   await fs.rm(resolve('build'), { force: true, recursive: true });
-  await ifDryRun('npm', ['run', 'build']);
+  await ifDryRun(pkgManager, ['run', 'build']);
 };
 const doRelease = async (version) => {
   step('\nBuild package...');
   await build();
   step('\nBump version...');
-  await ifDryRun(`npm`, ['version', version, '-m', `chore(version): bump version to v${version}`]);
+  await ifDryRun(pkgManager, ['version', version, '-m', `chore(version): bump version to v${version}`]);
 
   step('\nGenerate changelog...');
-  await ifDryRun('npm', ['run', 'genlog']);
+  await ifDryRun(pkgManager, ['run', 'genlog']);
   await commitChanges(version);
   step('\nPublish package to npm...');
-  await ifDryRun('npm', ['publish', '--reg', npmRegistry]);
+  await ifDryRun(pkgManager, ['publish', '--reg', npmRegistry]);
 
   step('\nPush to github...');
   await ifDryRun('git', ['push']);

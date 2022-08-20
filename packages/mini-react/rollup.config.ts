@@ -1,6 +1,6 @@
 import typescript from 'rollup-plugin-typescript2';
 import dts from 'rollup-plugin-dts';
-import pkg from './package.json';
+import pkg from '../../package.json';
 
 const mode = process.env.MODE;
 const isProd = mode === 'prod';
@@ -28,8 +28,8 @@ export default [
         sourcemap: !isProd
       },
       {
-        file: 'build/my-lib.global.js',
-        name: 'MyLib',
+        file: 'build/mini-react.global.js',
+        name: 'MiniReact',
         format: 'iife',
         sourcemap: !isProd
       },

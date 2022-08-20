@@ -24,7 +24,4 @@
     "moduleResolution": "Node",
     "resolveJsonModule": true
   },
-  "include": [
-    "lib/**/*"
-  ]
 }
