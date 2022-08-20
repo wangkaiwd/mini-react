@@ -1,0 +1,14 @@
+{
+  "name": "@sppk/mini-react",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build/mini-react.cjs.js",
+  "module": "build/mini-react.es.js",
+  "types": "build/mini-react.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
