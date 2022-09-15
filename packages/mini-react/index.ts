@@ -1,4 +1,3 @@
-export function add(a: number, b: number) {
-  console.log("1", a, b);
-  return a + b;
-}
+import { createElement } from './core/react';
+
+console.log('element', createElement('h1', { className: 'a' }, createElement('span', {}, 'a'), createElement('span', {}, 'b')));

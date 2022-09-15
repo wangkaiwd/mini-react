@@ -34,10 +34,14 @@ export default [
         sourcemap: !isProd
       },
     ],
-    plugins: [typescript({
-      useTsconfigDeclarationDir: true,
-      tsconfigOverride: { compilerOptions: { sourceMap: !isProd } }
-    })],
+    plugins: [
+      typescript({
+        useTsconfigDeclarationDir: true,
+        tsconfigOverride: {
+          compilerOptions: { sourceMap: !isProd }
+        }
+      })
+    ],
   },
   {
     input: 'build/types/index.d.ts',
@@ -49,4 +53,4 @@ export default [
     ],
     plugins: [dts()],
   },
-] as RollupOptions;
+];

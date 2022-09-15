@@ -6,7 +6,8 @@
   "module": "build/mini-react.es.js",
   "types": "build/mini-react.d.ts",
   "scripts": {
-    "dev": "rollup -w -c rollup.config.ts --environment MODE:dev",
+    "clear": "rm -rf build",
+    "dev": "pnpm clear && rollup -w -c rollup.config.ts --environment MODE:dev",
     "build": "rollup -c rollup.config.ts --environment MODE:prod && rm -rf build/types",
     "genlog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },
