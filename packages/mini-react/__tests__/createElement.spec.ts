@@ -1,4 +1,4 @@
-import { createElement } from '../core/react';
+import { createElement } from '../index';
 
 describe('createElement', () => {
   it('should create virtual node', () => {

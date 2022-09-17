@@ -3,7 +3,25 @@
 
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
-
+const path = require('path');
+// config webpack alias
+const webpackConfigPlugin = () => {
+  return {
+    name: 'webpack-config-plugin',
+    /**
+       * @param {any} config
+       */
+    configureWebpack (config) {
+      return {
+        resolve: {
+          alias: {
+            '@sppk/mini-react': path.resolve(__dirname, '../mini-react/index.ts')
+          }
+        }
+      };
+    }
+  };
+};
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Mini React',
@@ -45,7 +63,7 @@ const config = {
       }),
     ],
   ],
-
+  plugins: [webpackConfigPlugin],
   themeConfig:
   /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({

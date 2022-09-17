@@ -21,10 +21,12 @@
     /* Disallow inconsistently-cased references to the same file. */
     "declaration": true,
     "moduleResolution": "Node",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@sppk/mini-react": [
+        "./packages/mini-react/index.ts"
+      ]
+    }
   },
-  "exclude": [
-    "__tests__/**",
-    "**/*.spec.ts"
-  ]
 }

@@ -8,7 +8,7 @@
   "scripts": {
     "clear": "rm -rf build",
     "dev": "pnpm clear && rollup -w -c rollup.config.ts --environment MODE:dev",
-    "build": "rollup -c rollup.config.ts --environment MODE:prod && rm -rf build/types",
+    "build": "pnpm clear && rollup -c rollup.config.ts --environment MODE:prod && rm -rf build/types",
     "genlog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },
   "dependencies": {
