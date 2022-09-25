@@ -8,7 +8,7 @@ describe('createElement', () => {
       createElement('span', {}, 'a'),
       createElement('span', {}, 'b')
     );
-    const node1 = {
+    const rawNode = {
       type: 'h1',
       props: {
         key: undefined,
@@ -20,6 +20,15 @@ describe('createElement', () => {
         ]
       }
     };
-    expect(node).toEqual(node1);
+    const App = (props: any) => {
+      return props.children;
+    };
+    // const nodeComponent = createElement(
+    //   App,
+    //   { className: 'a' },
+    //   createElement('span', {}, 'a'), // props.children
+    //   createElement('span', {}, 'b')
+    // );
+    expect(node).toEqual(rawNode);
   });
 });
