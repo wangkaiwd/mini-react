@@ -1,9 +1,6 @@
 import { createElement, render } from '@sppk/mini-react';
 
-const RenderElement = () => {
-  return createElement('div', {}, createElement('span', {}, 'a'));
-};
-
-render(createElement(RenderElement, {}), document.getElementsByTagName('body')[0]);
+const element = createElement('div', {}, createElement('span', {}, 'a'));
+render(element, document.getElementsByTagName('body')[0]);
 
 
