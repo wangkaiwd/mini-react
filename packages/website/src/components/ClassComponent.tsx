@@ -3,11 +3,17 @@ import { Component, render, createElement } from '@sppk/mini-react';
 class Test extends Component {
   constructor (props: any) {
     super(props);
-    this.state = {};
+    this.state = {
+      number: 0
+    };
   }
 
+  onClick = () => {
+    console.log('click');
+    this.setState({ number: ++this.state.number });
+  };
   render = () => {
-    return createElement('span', {}, 'hello');
+    return <span style={{ color: 'red' }} onClick={this.onClick}>{this.state.number}</span>;
   };
 }
 
