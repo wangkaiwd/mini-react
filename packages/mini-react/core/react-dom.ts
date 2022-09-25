@@ -1,4 +1,9 @@
-import { BuiltInTag, VNode } from './types';
+import { BuiltInTag, ClassComponent, FunctionComponent, VNode } from './types';
+
+const renderTextNode = (text: string, container: HTMLElement) => {
+  const textNode = document.createTextNode(text);
+  container.appendChild(textNode);
+};
 
 const renderElement = (vNode: VNode, container: HTMLElement) => {
   const { type, props } = vNode;
@@ -15,18 +20,30 @@ const renderElement = (vNode: VNode, container: HTMLElement) => {
   container.appendChild(el);
 };
 
-const renderTextNode = (text: string, container: HTMLElement) => {
-  const textNode = document.createTextNode(text);
-  container.appendChild(textNode);
-};
+function renderFunctionComponent (vNode: VNode, container: HTMLElement) {
+  const { type, props } = vNode;
+  const subTree = (type as FunctionComponent)(props);
+  internalRender(subTree, container);
+}
+
+function renderClassComponent (vNode: VNode, container: HTMLElement) {
+  const { props } = vNode;
+  const type = vNode.type as ClassComponent;
+  const instance = new type(props);
+  const subTree = instance.render() as unknown as VNode;
+  internalRender(subTree, container);
+}
 
 const internalRender = (vNode: VNode, container: HTMLElement) => {
   const { type, props } = vNode;
   if (typeof type === 'string') { // native html tag
     renderElement(vNode, container);
   } else {  // function: custom component
-    const subTree = type(props);
-    internalRender(subTree, container);
+    if ((type as ClassComponent).isReactClassComponent) {
+      renderClassComponent(vNode, container);
+    } else {
+      renderFunctionComponent(vNode, container);
+    }
   }
 };
 export const render = (vNode: VNode, container: HTMLElement) => {
