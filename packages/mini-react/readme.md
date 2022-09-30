@@ -10,6 +10,7 @@
 * ReactDOM.render
 * function Component
 * class Component
-* setState update data
-* batch update data
-* synthetic event
+* setState update state
+
+[//]: # (* batch update data)
+[//]: # (* synthetic event)

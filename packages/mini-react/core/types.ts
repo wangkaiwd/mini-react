@@ -14,4 +14,6 @@ export interface VNode {
   ref?: any;
   key?: string | number;
   props: Record<any, any>;
+  el?: HTMLElement;
+  oldVNode?: VNode;
 }

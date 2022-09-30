@@ -34,6 +34,7 @@ const renderElement = (vNode: VNode, container: HTMLElement) => {
   const { children: rawChildren } = props;
   const children = Array.isArray(rawChildren) ? rawChildren : [rawChildren];
   const el = document.createElement(type as BuiltInTag);
+  vNode.el = el;
   updateProps(el, props);
   children.forEach(child => {
     if (typeof child === 'string' || typeof child === 'number') {
@@ -48,6 +49,7 @@ const renderElement = (vNode: VNode, container: HTMLElement) => {
 function renderFunctionComponent (vNode: VNode, container: HTMLElement) {
   const { type, props } = vNode;
   const subTree = (type as FunctionComponent)(props);
+  vNode.oldVNode = subTree;
   internalRender(subTree, container);
 }
 
@@ -56,6 +58,7 @@ function renderClassComponent (vNode: VNode, container: HTMLElement) {
   const type = vNode.type as ClassComponent;
   const instance = new type(props);
   const subTree = instance.render() as unknown as VNode;
+  instance.oldVNode = vNode.oldVNode = subTree;
   internalRender(subTree, container);
 }
 
