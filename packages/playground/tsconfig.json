@@ -22,7 +22,7 @@
     "baseUrl": ".",
     "paths": {
       "@sppk/mini-react": [
-        "./packages/mini-react/index.ts"
+        "../mini-react/index.ts"
       ]
     }
   },
