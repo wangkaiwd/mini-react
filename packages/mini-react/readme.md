@@ -11,6 +11,4 @@
 * function Component
 * class Component
 * setState update state
-
-[//]: # (* batch update data)
-[//]: # (* synthetic event)
+* synthetic event and batch update data

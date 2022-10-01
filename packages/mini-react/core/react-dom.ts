@@ -1,4 +1,5 @@
 import { BuiltInTag, ClassComponent, FunctionComponent, VNode } from './types';
+import { addEvent } from './events';
 
 const eventReg = /^on[A-Z].*/;
 const renderTextNode = (text: string, container: HTMLElement) => {
@@ -16,7 +17,7 @@ const processStyle = (props: Record<any, any>, el: HTMLElement) => {
 const processListener = (key: string, props: Record<any, any>, el: HTMLElement) => {
   const eventName = key.replace('on', '').toLowerCase();
   const handler = props[key];
-  el.addEventListener(eventName, handler);
+  addEvent(el, eventName, handler);
 };
 
 function updateProps (el: HTMLElement, props: Record<any, any>) {
@@ -57,12 +58,12 @@ function renderClassComponent (vNode: VNode, container: HTMLElement) {
   const { props } = vNode;
   const type = vNode.type as ClassComponent;
   const instance = new type(props);
-  const subTree = instance.render() as unknown as VNode;
+  const subTree = instance.render();
   instance.oldVNode = vNode.oldVNode = subTree;
   internalRender(subTree, container);
 }
 
-const internalRender = (vNode: VNode, container: HTMLElement) => {
+export const internalRender = (vNode: VNode, container: HTMLElement) => {
   const { type } = vNode;
   if (typeof type === 'string') { // native html tag
     renderElement(vNode, container);

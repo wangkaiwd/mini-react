@@ -1,33 +1,32 @@
 import { Updater } from './updater';
+import { VNode } from './types';
+import { internalRender } from './react-dom';
 
-class Component {
+abstract class Component {
   static isReactClassComponent = true;
   state: Record<any, any> = {};
   props: Record<any, any>;
   oldVNode: Record<any, any> | undefined = undefined;
   private updater: Updater;
 
-  constructor (props: Record<any, any>) {
+  abstract render (): VNode
+
+  protected constructor (props: Record<any, any>) {
     this.props = props;
     this.updater = new Updater(this);
-    console.log('this.state1', this.state);
   }
 
   setState = (partialState: Record<any, any>) => {
-    this.state = {
-      ...this.state,
-      ...partialState
-    };
-    this.updater.updateComponent();
+    this.updater.addState(partialState);
   };
 
   forceUpdate = () => {
     const { oldVNode } = this;
-    console.log('old', oldVNode);
-  };
-
-  render () {
-
+    if (!oldVNode) {return;}
+    const newVNode = this.render();
+    internalRender(newVNode, oldVNode.el.parentNode);
+    oldVNode.el.remove();
+    this.oldVNode = newVNode;
   };
 }
 
