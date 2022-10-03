@@ -15,11 +15,19 @@ export const updateQueue = {
     this.queue.clear();
   }
 };
-const wrapper = (event: Event, handler: (...args: any[]) => any) => {
+const handlerWrapper = (event: Event, handler: (...args: any[]) => any) => {
   updateQueue.isBatchUpdating = true;
-  const result = handler(event);
+  const { type, target } = event;
+  let currentTarget = target;
+  // handle stop propagation recursively
+  // while (currentTarget) {
+  //   if ((currentTarget as any).store[type]) {
+  //     handler(createSyntheticEvent(event));
+  //   }
+  //   currentTarget = (currentTarget as any).parentNode;
+  // }
+  handler(createSyntheticEvent(event));
   updateQueue.batchUpdate();
-  return result;
 };
 
 type ListenersStore = Record<string, {
@@ -32,7 +40,7 @@ export const addEvent = (el: HTMLElement & Record<string, any>, eventType: strin
   //  1. avoid continuous bind the same event
   //  2. click document also will trigger event
   if (!store[eventType]) {
-    const fn = (e: Event) => wrapper(e, fn.value);
+    const fn = (e: Event) => handlerWrapper(e, fn.value);
     fn.value = handler;
     store[eventType] = fn;
     document.addEventListener(eventType, fn);
@@ -41,3 +49,45 @@ export const addEvent = (el: HTMLElement & Record<string, any>, eventType: strin
     fn.value = handler;
   }
 };
+
+function preventDefault (this: any) {
+  this.defaultPrevented = true;
+  const event = this.nativeEvent;
+  if (event.stopPropagation) {
+    event.stopPropagation();
+  } else {
+    event.returnValue = false;
+  }
+}
+
+function stopPropagation (this: any) {
+  this.propagationStopped = true;
+  const event = this.nativeEvent;
+  if (event.stopPropagation) {
+    event.stopPropagation();
+  } else {
+    event.cancelBuble = true;
+  }
+}
+
+/**
+ * compatible different browser behavior
+ * @param naiveEvent
+ */
+export const createSyntheticEvent = (naiveEvent: Event) => {
+  const syntheticEvent: any = {};
+  for (const key in naiveEvent) {
+    let value = naiveEvent[key as keyof Event];
+    if (typeof value === 'function') {
+      value = value.bind(naiveEvent);
+    }
+    syntheticEvent[key] = value;
+  }
+  syntheticEvent.nativeEvent = naiveEvent;
+  syntheticEvent.defaultPrevented = false;
+  syntheticEvent.preventDefault = preventDefault;
+  syntheticEvent.propagationStopped = false;
+  syntheticEvent.stopPropagation = stopPropagation;
+  return syntheticEvent as Event;
+};
+
