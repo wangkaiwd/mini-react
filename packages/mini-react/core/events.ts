@@ -3,7 +3,6 @@ import { Updater } from './updater';
 // think:
 // batch update: rally all partial state to an array, then merge every part of array with component state after execute event handler
 
-// proxy event to document ?
 export const updateQueue = {
   isBatchUpdating: false,
   queue: new Set<Updater>(),
@@ -15,18 +14,24 @@ export const updateQueue = {
     this.queue.clear();
   }
 };
-const handlerWrapper = (event: Event, handler: (...args: any[]) => any) => {
+// batch update
+const handlerWrapper = (event: Event) => {
   updateQueue.isBatchUpdating = true;
-  const { type, target } = event;
-  let currentTarget = target;
-  // handle stop propagation recursively
-  // while (currentTarget) {
-  //   if ((currentTarget as any).store[type]) {
-  //     handler(createSyntheticEvent(event));
-  //   }
-  //   currentTarget = (currentTarget as any).parentNode;
-  // }
-  handler(createSyntheticEvent(event));
+  const syntheticEvent: any = createSyntheticEvent(event);
+  const { type, target } = syntheticEvent;
+  let currentTarget = target as any;
+  while (currentTarget) {
+    const handler = currentTarget?.listenersStore?.[type].value;
+    if (syntheticEvent?.propagationStopped) {
+      break;
+    }
+    if (handler) {
+      handler(syntheticEvent);
+      break;
+    }
+    currentTarget = currentTarget.parentNode;
+  }
+
   updateQueue.batchUpdate();
 };
 
@@ -34,16 +39,19 @@ type ListenersStore = Record<string, {
   (...args: any[]): any
   value: (...args: any[]) => any
 }>;
+
+// todo: proxy event to document ?
 export const addEvent = (el: HTMLElement & Record<string, any>, eventType: string, handler: (...args: any[]) => any) => {
   const store: ListenersStore = el.listenersStore = {};
   // todo:
   //  1. avoid continuous bind the same event
   //  2. click document also will trigger event
   if (!store[eventType]) {
-    const fn = (e: Event) => handlerWrapper(e, fn.value);
+    const fn = (e: Event) => handlerWrapper(e);
     fn.value = handler;
     store[eventType] = fn;
-    document.addEventListener(eventType, fn);
+    if (!(document as any)[`on${eventType}`]) {}
+    (document as any)[`on${eventType}`] = fn;
   } else {
     const fn = store[eventType];
     fn.value = handler;
@@ -90,4 +98,6 @@ export const createSyntheticEvent = (naiveEvent: Event) => {
   syntheticEvent.stopPropagation = stopPropagation;
   return syntheticEvent as Event;
 };
+
+
 

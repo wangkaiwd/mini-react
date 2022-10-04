@@ -9,7 +9,7 @@ class SyntheticEvent extends Component {
   }
 
   onClick = (e: any) => {
-    // todo: stop propagation not work ?
+    e.stopPropagation();
     console.log('button');
   };
 
