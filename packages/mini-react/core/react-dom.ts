@@ -58,10 +58,13 @@ function renderFunctionComponent (vNode: VNode, container: HTMLElement) {
 }
 
 function renderClassComponent (vNode: VNode, container: HTMLElement) {
-  const { props } = vNode;
+  const { props, ref } = vNode;
   const type = vNode.type as ClassComponent;
   const instance = new type(props);
   const subTree = instance.render();
+  if (ref) {
+    ref.current = instance;
+  }
   instance.oldVNode = vNode.oldVNode = subTree;
   internalRender(subTree, container);
 }
