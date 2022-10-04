@@ -1,5 +1,6 @@
-import { BuiltInTag, ClassComponent, FunctionComponent, VNode } from './types';
+import { BuiltInTag, ClassComponent, ForwardRef, FunctionComponent, VNode } from './types';
 import { addEvent } from './events';
+import { REACT_FORWARD_REF } from './constants';
 
 const eventReg = /^on[A-Z].*/;
 const renderTextNode = (text: string, container: HTMLElement) => {
@@ -69,10 +70,20 @@ function renderClassComponent (vNode: VNode, container: HTMLElement) {
   internalRender(subTree, container);
 }
 
+function renderForwardComponent (vNode: VNode, container: HTMLElement) {
+  const type = vNode.type as ForwardRef;
+  const { props, ref } = vNode;
+  const subTree = type.render(props, ref);
+  vNode.oldVNode = subTree;
+  internalRender(subTree, container);
+}
+
 export const internalRender = (vNode: VNode, container: HTMLElement) => {
   const { type } = vNode;
   if (typeof type === 'string') { // native html tag
     renderElement(vNode, container);
+  } else if (typeof type === 'object' && type.$$typeof === REACT_FORWARD_REF) { // forward ref
+    renderForwardComponent(vNode, container);
   } else {  // function: custom component
     if ((type as ClassComponent).isReactClassComponent) {
       renderClassComponent(vNode, container);

@@ -12,3 +12,7 @@
 * class Component
 * setState update state
 * synthetic event and batch update data
+* ref:
+  * element ref
+  * class component ref
+  * function component: forward ref
