@@ -31,11 +31,14 @@ function updateProps (el: HTMLElement, props: Record<any, any>) {
 }
 
 const renderElement = (vNode: VNode, container: HTMLElement) => {
-  const { type, props } = vNode;
+  const { type, props, ref } = vNode;
   const { children: rawChildren } = props;
   const children = Array.isArray(rawChildren) ? rawChildren : [rawChildren];
   const el = document.createElement(type as BuiltInTag);
   vNode.el = el;
+  if (ref) {
+    ref.current = el;
+  }
   updateProps(el, props);
   children.forEach(child => {
     if (typeof child === 'string' || typeof child === 'number') {
