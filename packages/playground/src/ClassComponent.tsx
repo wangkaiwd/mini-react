@@ -1,5 +1,6 @@
 import { Component, createElement } from '@sppk/mini-react';
 
+// @ts-ignore
 class ClassComponent extends Component {
   constructor (props: any) {
     super(props);

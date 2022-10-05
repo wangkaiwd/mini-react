@@ -2,7 +2,10 @@ import { Component } from '@sppk/mini-react';
 import { updateQueue } from './events';
 
 const shouldUpdate = (instance: Component) => {
-  instance.forceUpdate();
+  const { props, state } = instance;
+  if (!instance.componentShouldUpdate || instance.componentShouldUpdate?.(props, state)) {
+    instance.forceUpdate();
+  }
 };
 
 class Updater {

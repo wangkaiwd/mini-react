@@ -11,6 +11,16 @@ abstract class Component {
 
   abstract render (): VNode
 
+  abstract componentWillMount? (): void;
+
+  abstract componentDidMount? (): void;
+
+  abstract componentShouldUpdate? (nextProps: Record<any, any>, nextState: Record<any, any>): boolean;
+
+  abstract componentWillUpdate? (nextProps: Record<any, any>, nextState: Record<any, any>): void;
+
+  abstract componentDidUpdate? (prevProps: Record<any, any>, prevState: Record<any, any>): void;
+
   protected constructor (props: Record<any, any>) {
     this.props = props;
     this.updater = new Updater(this);
@@ -23,10 +33,12 @@ abstract class Component {
   forceUpdate = () => {
     const { oldVNode } = this;
     if (!oldVNode) {return;}
+    this.componentWillUpdate?.(this.props, this.state);
     const newVNode = this.render();
     internalRender(newVNode, oldVNode.el.parentNode);
     oldVNode.el.remove();
     this.oldVNode = newVNode;
+    this.componentDidUpdate?.(this.props, this.state);
   };
 }
 

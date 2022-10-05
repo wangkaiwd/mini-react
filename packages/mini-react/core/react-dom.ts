@@ -62,12 +62,14 @@ function renderClassComponent (vNode: VNode, container: HTMLElement) {
   const { props, ref } = vNode;
   const type = vNode.type as ClassComponent;
   const instance = new type(props);
+  instance.componentWillMount?.();
   const subTree = instance.render();
   if (ref) {
     ref.current = instance;
   }
   instance.oldVNode = vNode.oldVNode = subTree;
   internalRender(subTree, container);
+  instance.componentDidMount?.();
 }
 
 function renderForwardComponent (vNode: VNode, container: HTMLElement) {

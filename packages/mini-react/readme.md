@@ -16,3 +16,10 @@
   * element ref
   * class component ref
   * function component: forward ref
+* class component lifecycle:
+  * initial(constructor)
+  * componentWillMount
+  * componentDidMount
+  * componentShouldUpdate
+  * componentWillUpdate
+  * componentDidUpdate

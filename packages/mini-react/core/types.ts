@@ -21,6 +21,16 @@ export interface ClassComponentInstance {
 
   forceUpdate (): void;
 
+  componentWillMount? (): void;
+
+  componentDidMount? (): void;
+
+  componentShouldUpdate? (nextProps: Record<any, any>, nextState: Record<any, any>): void;
+
+  componentWillUpdate? (nextProps: Record<any, any>, nextState: Record<any, any>): void;
+
+  componentDidUpdate? (prevProps: Record<any, any>, prevState: Record<any, any>): void;
+
   [k: string]: any;
 }
 
