@@ -23,3 +23,22 @@
   * componentShouldUpdate
   * componentWillUpdate
   * componentDidUpdate
+
+### Note
+
+`React.Memo` only work for primitive value props, if props contain object or function , maybe use it combine with useMemo and useCallback
+
+```tsx
+// always render when parent update
+const Child = (props) => {
+  console.log('props',props)
+  return <div>child</div>
+}
+const Parent = () => {
+  const obj = {a:1}
+  const fn = () => {
+    console.log('fn')
+  }
+  return <Child obj={obj} fn={fn} />
+}
+```

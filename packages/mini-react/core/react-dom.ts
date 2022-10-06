@@ -1,6 +1,7 @@
 import { BuiltInTag, ClassComponent, ForwardRef, FunctionComponent, VNode } from './types';
 import { addEvent } from './events';
 import { REACT_FORWARD_REF } from './constants';
+import { hookStore } from './hooks';
 
 const eventReg = /^on[A-Z].*/;
 const renderTextNode = (text: string, container: HTMLElement) => {
@@ -96,4 +97,9 @@ export const internalRender = (vNode: VNode, container: HTMLElement) => {
 };
 export const render = (vNode: VNode, container: HTMLElement) => {
   internalRender(vNode, container);
+  hookStore.scheduleUpdate = () => {
+    hookStore.hookIndex = 0;
+    container.innerHTML = '';
+    internalRender(vNode, container);
+  };
 };
