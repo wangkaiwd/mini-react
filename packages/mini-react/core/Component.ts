@@ -4,22 +4,24 @@ import { internalRender } from './react-dom';
 
 abstract class Component {
   static isReactClassComponent = true;
+  static contextType?: any;
   state: Record<any, any> = {};
   props: Record<any, any>;
+  context?: any;
   oldVNode: Record<any, any> | undefined = undefined;
   private updater: Updater;
 
   abstract render (): VNode
 
-  abstract componentWillMount? (): void;
+  componentWillMount? (): void;
 
-  abstract componentDidMount? (): void;
+  componentDidMount? (): void;
 
-  abstract componentShouldUpdate? (nextProps: Record<any, any>, nextState: Record<any, any>): boolean;
+  componentShouldUpdate? (nextProps: Record<any, any>, nextState: Record<any, any>): boolean;
 
-  abstract componentWillUpdate? (nextProps: Record<any, any>, nextState: Record<any, any>): void;
+  componentWillUpdate? (nextProps: Record<any, any>, nextState: Record<any, any>): void;
 
-  abstract componentDidUpdate? (prevProps: Record<any, any>, prevState: Record<any, any>): void;
+  componentDidUpdate? (prevProps: Record<any, any>, prevState: Record<any, any>): void;
 
   protected constructor (props: Record<any, any>) {
     this.props = props;

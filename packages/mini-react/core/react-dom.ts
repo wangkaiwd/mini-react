@@ -1,7 +1,8 @@
-import { BuiltInTag, ClassComponent, ForwardRef, FunctionComponent, VNode } from './types';
+import { BuiltInTag, ClassComponent, ForwardRef, FunctionComponent, ProviderComponent, VNode } from './types';
 import { addEvent } from './events';
-import { REACT_FORWARD_REF } from './constants';
+import { REACT_CONTEXT, REACT_FORWARD_REF, REACT_PROVIDER } from './constants';
 import { hookStore } from './hooks';
+import { isFalsy } from '../utils/dataType';
 
 const eventReg = /^on[A-Z].*/;
 const renderTextNode = (text: string, container: HTMLElement) => {
@@ -35,6 +36,7 @@ function updateProps (el: HTMLElement, props: Record<any, any>) {
 const renderElement = (vNode: VNode, container: HTMLElement) => {
   const { type, props, ref } = vNode;
   const { children: rawChildren } = props;
+  if (isFalsy(rawChildren)) {return;}
   const children = Array.isArray(rawChildren) ? rawChildren : [rawChildren];
   const el = document.createElement(type as BuiltInTag);
   vNode.el = el;
@@ -63,6 +65,9 @@ function renderClassComponent (vNode: VNode, container: HTMLElement) {
   const { props, ref } = vNode;
   const type = vNode.type as ClassComponent;
   const instance = new type(props);
+  if (type.contextType) {
+    instance.context = type.contextType._currentValue;
+  }
   instance.componentWillMount?.();
   const subTree = instance.render();
   if (ref) {
@@ -81,12 +86,22 @@ function renderForwardComponent (vNode: VNode, container: HTMLElement) {
   internalRender(subTree, container);
 }
 
+function renderProviderComponent (vNode: VNode, container: HTMLElement) {
+  const type = vNode.type as ProviderComponent;
+  const { props } = vNode;
+  type._context._currentValue = props.value;
+  // props.children
+  internalRender(props.children, container);
+}
+
 export const internalRender = (vNode: VNode, container: HTMLElement) => {
   const { type } = vNode;
   if (typeof type === 'string') { // native html tag
     renderElement(vNode, container);
   } else if (typeof type === 'object' && type.$$typeof === REACT_FORWARD_REF) { // forward ref
     renderForwardComponent(vNode, container);
+  } else if (typeof type === 'object' && type.$$typeof === REACT_PROVIDER) {
+    renderProviderComponent(vNode, container);
   } else {  // function: custom component
     if ((type as ClassComponent).isReactClassComponent) {
       renderClassComponent(vNode, container);

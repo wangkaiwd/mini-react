@@ -14,6 +14,7 @@ export interface ClassComponentInstance {
   state: Record<any, any>;
   props: Record<any, any>;
   oldVNode?: Record<any, any>;
+  context?: any;
 
   setState (partialState: Record<any, any>): void;
 
@@ -36,11 +37,17 @@ export interface ClassComponentInstance {
 
 export interface ClassComponent {
   isReactClassComponent: boolean;
+  contextType?: any;
 
   new (props: Record<any, any>): ClassComponentInstance;
 }
 
-export type VNodeType = BuiltInTag | FunctionComponent | ClassComponent | ForwardRef
+export interface ProviderComponent {
+  $$typeof: symbol;
+  _context: any;
+}
+
+export type VNodeType = BuiltInTag | FunctionComponent | ClassComponent | ForwardRef | ProviderComponent
 
 export interface VNode {
   $$typeof: symbol;
