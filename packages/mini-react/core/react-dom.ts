@@ -113,8 +113,14 @@ export const internalRender = (vNode: VNode, container: HTMLElement) => {
 export const render = (vNode: VNode, container: HTMLElement) => {
   internalRender(vNode, container);
   hookStore.scheduleUpdate = () => {
-    hookStore.hookIndex = 0;
-    container.innerHTML = '';
-    internalRender(vNode, container);
+    if (!hookStore.scheduleUpdated) {
+      hookStore.scheduleUpdated = true;
+      queueMicrotask(() => {
+        hookStore.hookIndex = 0;
+        container.innerHTML = '';
+        internalRender(vNode, container);
+        hookStore.scheduleUpdated = false;
+      });
+    }
   };
 };

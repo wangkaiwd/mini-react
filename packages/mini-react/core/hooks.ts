@@ -2,12 +2,14 @@ interface HookStore {
   scheduleUpdate?: () => void;
   hookIndex: number;
   hookStates: any[];
+  scheduleUpdated: boolean;
 }
 
 export const hookStore: HookStore = {
   scheduleUpdate: undefined,
   hookIndex: 0,
-  hookStates: []
+  hookStates: [],
+  scheduleUpdated: false
 };
 export const useState = (initialState?: any) => {
   return useReducer(null, initialState);

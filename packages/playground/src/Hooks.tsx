@@ -6,6 +6,7 @@ const Hooks = () => {
   const onClickCount = () => {
     console.log('click');
     setCount(count + 1);
+    setCount(count + 1);
   };
   const double = useMemo(() => {
     console.log('double');
@@ -15,7 +16,7 @@ const Hooks = () => {
   const onClickAge = useCallback(() => {
     setAge(age + 1);
   }, []);
-
+  console.log('render');
   return createElement(
     'div', {},
     createElement('div', { onClick: onClickCount }, `${count}:${double}`),
